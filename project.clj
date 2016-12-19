@@ -1,4 +1,4 @@
-(defproject employeerepublic/slf4j-timbre "0.4.0"
+(defproject employeerepublic/slf4j-timbre "0.4.1"
   :description "SLF4J binding for Timbre"
   :url "https://github.com/employeerepublic/slf4j-timbre"
   :scm {:name "git"
