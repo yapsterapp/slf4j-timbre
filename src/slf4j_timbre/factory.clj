@@ -4,11 +4,14 @@
    :implements [org.slf4j.ILoggerFactory]
    :state state
    :init init)
-  (:require slf4j-timbre.adapter)
+  (:require
+   slf4j-timbre.adapter
+   [slf4j-timbre.configure :as configure])
   (:import com.github.fzakaria.slf4j.timbre.TimbreLoggerAdapter))
 
 (defn -init
   []
+  (configure/configure-timbre-once)
   [[] (atom {})])
 
 (defn -getLogger
