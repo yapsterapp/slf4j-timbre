@@ -111,7 +111,7 @@
 
   ([]
    (let [lfs (read-logging-filters)]
-     (configure-timbre
+     (configure-timbre*
       {:logging-filters lfs})))
 
   ([{:keys [opts
