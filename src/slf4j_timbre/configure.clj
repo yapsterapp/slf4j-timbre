@@ -80,7 +80,13 @@
   "minimum levels for different namespaces"
   ([] (read-logging-filters "logging_filters.edn"))
   ([f]
-   (if-let [r (io/resource f)]
+   (if-let [r (io/resource
+               f
+               ;; there's a bug in io/resource which NPEs
+               ;; when the context ClassLoader is null
+               (or
+                (.getContextClassLoader (Thread/currentThread))
+                (ClassLoader/getSystemClassLoader)))]
      (do
        (timbre/info "found log filters in: " r)
        (some-> r slurp edn/read-string))
