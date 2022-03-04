@@ -24,6 +24,17 @@
   [data]
   (assoc data :thread-name (.getName (Thread/currentThread))))
 
+(defn output-context
+  [context]
+  (when (not-empty context)
+    (str
+     " ["
+     (->> context
+          (map (fn [[k v]]
+                 (str (name k) ":" v)))
+          (interpose " ")
+          (apply str))
+     "]")))
 
 (defn color-output-fn
   "Default (fn [data]) -> string output fn.
@@ -32,7 +43,7 @@
   ([opts data] ; For partials
    (let [{:keys [no-stacktrace? stacktrace-fonts]} opts
          {:keys [level ?err #_vargs msg_ ?ns-str hostname_
-                 timestamp_ ?line]} data
+                 timestamp_ ?line context]} data
          color {:info :green :warn :yellow :error :red}]
      (str
       (force timestamp_) " "
@@ -40,7 +51,9 @@
       (timbre/color-str :cyan "[" (or ?ns-str "?") ":" (or ?line "?") "]") " "
       (if-let [tn (:thread-name data)]
         (format "[%s]" tn)
-        "[?]") " - "
+        "[?]")
+      (output-context context)
+      " - "
       (force msg_)
       (when-not no-stacktrace?
         (when-let [err ?err]
@@ -53,7 +66,7 @@
   ([opts data] ; For partials
    (let [{:keys [no-stacktrace? stacktrace-fonts]} opts
          {:keys [level ?err #_vargs msg_ ?ns-str hostname_
-                 timestamp_ ?line]} data
+                 timestamp_ ?line context]} data
          color {:info :green :warn :yellow :error :red}]
      (str
       (force timestamp_) " "
@@ -61,7 +74,9 @@
       "[" (or ?ns-str "?") ":" (or ?line "?") "] "
       (if-let [tn (:thread-name data)]
         (format "[%s]" tn)
-        "[?]") " - "
+        "[?]")
+      (output-context context)
+      " - "
       (force msg_)
       (when-not no-stacktrace?
         (when-let [err ?err]
